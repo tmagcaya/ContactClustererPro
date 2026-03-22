@@ -1,0 +1,5 @@
+Flask
+phonenumbers
+us
+pyobjc-framework-Contacts
+pyobjc-core
