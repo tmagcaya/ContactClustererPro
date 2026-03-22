@@ -104,12 +104,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function populateDynamicCategories() {
-        const categories = new Set();
+        // Pre-seed the UI with defaults so they always appear immediately
+        const categories = new Set(['Reis', 'Hoca', 'Çırak', 'Müşavir', 'Ahbap', 'Dost']);
+        
         allContacts.forEach(c => {
             if (c.company) {
-                const match = c.company.match(/\[([-a-zA-Z0-9 ]+)/);
+                // Safely extract any dynamic custom label inside the bracket before the dash or end bracket
+                const match = c.company.match(/\[([^-\]]+)/);
                 if (match) {
-                    const cat = match[1].split('-')[0].trim();
+                    const cat = match[1].trim();
                     if (cat) categories.add(cat);
                 }
             }
