@@ -2,7 +2,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const tbody = document.getElementById('contacts-body');
     const selectAll = document.getElementById('select-all');
     const applyBtn = document.getElementById('apply-btn');
-    const categorySelect = document.getElementById('category-select');
+    const categoryInput = document.getElementById('category-input');
+    const datalist = document.getElementById('category-datalist');
+    const dynamicFilters = document.getElementById('dynamic-filters');
     const searchBox = document.getElementById('search-box');
     const contactCount = document.getElementById('contact-count');
     const removeBtn = document.getElementById('remove-btn');
@@ -17,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(res => res.json())
         .then(data => {
             allContacts = data;
+            populateDynamicCategories();
             updateView();
         })
         .catch(err => {
@@ -87,16 +90,43 @@ document.addEventListener('DOMContentLoaded', () => {
         updateApplyButtonState();
     });
     
-    categorySelect.addEventListener('change', updateApplyButtonState);
+    categoryInput.addEventListener('input', updateApplyButtonState);
     
-    document.querySelectorAll('.filter-pill').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
-            currentFilter = e.target.dataset.filter;
-            updateView();
+    function attachFilterListeners() {
+        document.querySelectorAll('.filter-pill').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.dataset.filter;
+                updateView();
+            });
         });
-    });
+    }
+    
+    function populateDynamicCategories() {
+        const categories = new Set();
+        allContacts.forEach(c => {
+            if (c.company) {
+                const match = c.company.match(/\[([-a-zA-Z0-9 ]+)/);
+                if (match) {
+                    const cat = match[1].split('-')[0].trim();
+                    if (cat) categories.add(cat);
+                }
+            }
+        });
+        
+        const sortedCats = Array.from(categories).sort();
+        datalist.innerHTML = sortedCats.map(cat => `<option value="${cat}">`).join('');
+        
+        dynamicFilters.innerHTML = `
+            <button class="filter-pill ${currentFilter === 'all' ? 'active' : ''}" data-filter="all">All</button>
+            <button class="filter-pill ${currentFilter === 'uncategorized' ? 'active' : ''}" data-filter="uncategorized">Blank</button>
+        ` + sortedCats.map(cat => `
+            <button class="filter-pill ${currentFilter === cat.toLowerCase() ? 'active' : ''}" data-filter="${cat.toLowerCase()}">${cat}</button>
+        `).join('');
+        
+        attachFilterListeners();
+    }
     
     function updateView() {
         const query = searchBox.value.toLowerCase();
@@ -104,12 +134,9 @@ document.addEventListener('DOMContentLoaded', () => {
             let comp = (c.company || '').toLowerCase();
             let matchesPill = true;
             if (currentFilter === 'uncategorized') matchesPill = !comp.includes('[');
-            else if (currentFilter === 'ulu') matchesPill = comp.includes('[ulu');
-            else if (currentFilter === 'mtr') matchesPill = comp.includes('[mtr');
-            else if (currentFilter === 'mentee') matchesPill = comp.includes('[mentee');
-            else if (currentFilter === 'mentor') matchesPill = comp.includes('[mentor');
-            else if (currentFilter === 'buddy') matchesPill = comp.includes('[buddy');
-            else if (currentFilter === 'friend') matchesPill = comp.includes('[friend');
+            else if (currentFilter !== 'all') {
+                matchesPill = comp.includes(`[${currentFilter}`);
+            }
             
             if (!matchesPill) return false;
             
@@ -170,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
             removeBtn.innerText = selected > 0 ? `Remove Tags (${selected})` : 'Remove Tags From Selected';
         }
         
-        if (selected > 0 && categorySelect.value) {
+        if (selected > 0 && categoryInput.value.trim().length > 0) {
             applyBtn.disabled = false;
             applyBtn.innerText = `Apply to ${selected} Contact(s)`;
         } else {
@@ -181,12 +208,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     applyBtn.addEventListener('click', () => {
         const selectedIds = Array.from(document.querySelectorAll('.contact-chk:checked')).map(chk => chk.value);
-        const category = categorySelect.value;
+        const category = categoryInput.value.trim();
         
-        if (category === 'blank') {
-            if (removeBtn) removeBtn.click();
-            return;
-        }
+        if (!category) return;
         
         applyBtn.disabled = true;
         applyBtn.innerText = 'Applying...';
@@ -210,6 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     allContacts = newData;
                     // Reset search and redraw
                     searchBox.value = "";
+                    populateDynamicCategories();
                     updateView();
                     
                     setTimeout(() => alert(`Successfully updated ${data.updated} contacts!`), 100);
@@ -244,6 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     selectAll.checked = false;
                     fetch('/api/contacts').then(r=>r.json()).then(newData => {
                         allContacts = newData;
+                        populateDynamicCategories();
                         updateView();
                         updateApplyButtonState();
                         setTimeout(() => alert(`Successfully stripped tags from ${data.updated} contacts!`), 100);

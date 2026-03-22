@@ -20,16 +20,8 @@
                 <h3>Categorization</h3>
                 
                 <label for="category-select">Select Group Level</label>
-                <select id="category-select">
-                    <option value="" disabled selected>Choose a label...</option>
-                    <option value="blank">Blank (Remove Label)</option>
-                    <option value="Ulu">Ulu</option>
-                    <option value="MTR">MTR</option>
-                    <option value="Mentee">Mentee</option>
-                    <option value="Mentor">Mentor</option>
-                    <option value="Buddy">Buddy</option>
-                    <option value="Friend">Friend</option>
-                </select>
+                <input type="text" id="category-input" list="category-datalist" placeholder="e.g. Reis, Hoca, Dost..." style="width: 100%; box-sizing: border-box;" />
+                <datalist id="category-datalist"></datalist>
 
                 <div class="info-bubble">
                     ℹ️ State locations (e.g., <strong>VA</strong>, <strong>NC</strong>) are automatically extracted from the <strong>Area Code</strong> and appended safely to the <strong>Company</strong> field.
@@ -47,15 +39,9 @@
                     <h2>Your Contacts (<span id="contact-count">0</span>)</h2>
                     <input type="text" id="search-box" placeholder="Search names, states, or phones..." />
                 </div>
-                <div class="quick-filters">
+                <div class="quick-filters" id="dynamic-filters">
                     <button class="filter-pill active" data-filter="all">All</button>
-                    <button class="filter-pill" data-filter="uncategorized">Blank</button>
-                    <button class="filter-pill" data-filter="ulu">Ulu</button>
-                    <button class="filter-pill" data-filter="mtr">MTR</button>
-                    <button class="filter-pill" data-filter="mentee">Mentee</button>
-                    <button class="filter-pill" data-filter="mentor">Mentor</button>
-                    <button class="filter-pill" data-filter="buddy">Buddy</button>
-                    <button class="filter-pill" data-filter="friend">Friend</button>
+                    <button class="filter-pill" data-filter="uncategorized">Blank / Uncategorized</button>
                 </div>
                 
                 <div class="table-wrapper">

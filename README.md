@@ -2,7 +2,7 @@
 
 > ⚠️ **macOS ONLY:** This application intrinsically relies on Apple's native macOS Objective-C frameworks (`pyobjc`) to interface live with your iCloud/Mac Contacts database. It **will not** work on Windows, Linux, or non-Apple operating systems.
 
-A beautiful, local web application to cluster and categorize your Mac Contacts based on custom relationship tags (Ulu, MTR, Mentee, Mentor, Buddy, Friend) and geographically tag their Area Codes natively inside Apple Contacts.
+A beautiful, local web application to cluster and categorize your Mac Contacts based on custom Ottoman-inspired short handles (e.g. Reis [Leader], Hoca [Mentor], Çırak [Mentee], Ahbap [Buddy], Dost [Friend]) and geographically tag their Area Codes natively inside Apple Contacts.
 
 ## Installation
 

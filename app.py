@@ -138,7 +138,7 @@ def update_contacts():
                             state_str = s
                             break
                             
-            # format [Friend L1 - VA]
+            # format [Dost - VA]
             tag = f"[{category}"
             if state_str:
                 tag += f" - {state_str}"
@@ -173,7 +173,7 @@ def remove_cluster():
             c = found[0]
             m = c.mutableCopy()
             org = m.organizationName() or ""
-            # Regex to strip out any tags [Friend L1 - ...] etc.
+            # Regex to strip out any tags [Dost - ...] etc.
             new_org = re.sub(r'\s*\[.*?\]', '', org).strip()
             if new_org != org:
                 m.setOrganizationName_(new_org if new_org else None)
