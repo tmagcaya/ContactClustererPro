@@ -25,11 +25,21 @@ A beautiful, local web application to cluster and categorize your Mac Contacts b
    pip install -r requirements.txt
    ```
    
-## Prerequisites
+## Prerequisites & Permissions
 
-1. **Terminal Privacy Access**: Because this app modifies your contacts locally, Apple requires explicit human permission.
-   - Go to your Mac's **System Settings** -> **Privacy & Security** -> **Contacts**.
-   - Make sure your terminal application (e.g. Terminal, iTerm, VS Code, or Cursor) is toggled **ON**.
+Because this app securely modifies your contacts locally, Apple requires explicit privacy permissions. 
+If this is your first time accessing Contacts from your Terminal or IDE, you must run this native Apple command first to force macOS to display the security popup:
+
+```bash
+osascript -e 'tell application "Contacts" to get the name of every person'
+```
+*(When the popup appears on your screen, click **OK/Allow** to grant your Terminal access before starting the web server.)*
+
+**Troubleshooting Permissions:**
+If the popup does not appear, or the web UI says it cannot find any contacts:
+1. Open your Mac's **System Settings** -> **Privacy & Security** -> **Contacts**.
+2. Find your terminal application (e.g. Terminal, VS Code, Cursor) and toggle it **ON**.
+3. If your terminal isn't listed, or it still fails: run `tccutil reset AddressBook` in your terminal to wipe your Mac's privacy cache and manually repeat the `osascript` command above.
 
 ## How to Run
 
